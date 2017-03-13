@@ -4,11 +4,9 @@ import os
 import requests
 from lxml import html
 import json
-import urllib.parse
-from tomorrow import threads
+import threading
 
 
-@threads(10)
 def req_audio_names(cur_session, cur_header, req_url, audio_name_list, audio_id):
     ret = cur_session.get(req_url, headers=cur_header)
     if ret.status_code != 200:
@@ -17,7 +15,7 @@ def req_audio_names(cur_session, cur_header, req_url, audio_name_list, audio_id)
         ret_json = json.loads(ret.text)
         cur_file_name = ret_json['files']['file'].split('attname=')[1].split('.mp3')[0]
         # 解析形如%E7%A9%BF%E8%B6%8A%E7%99%BE%E5%B9%B4%E4%B8'的URL字符串
-        cur_file_name = urllib.parse.unquote(cur_file_name)
+        # cur_file_name = urllib.parse.unquote(cur_file_name)
         audio_name_list.append(cur_file_name + '.mp3')
 
 
@@ -66,7 +64,10 @@ def rename_files(url, path):
                 for item in audio_id_list:
                     req_url = 'http://www.justing.com.cn/audios/files/api?book_id=' \
                               '%s&audio_id=%s&action=download' % (book_id, item)
-                    req_audio_names(login_session, header, req_url, name_list, item)
+                    ret_thread = threading.Thread(target=req_audio_names, args=(login_session, header,
+                                                                                req_url, name_list, item,))
+                    ret_thread.start()
+                    ret_thread.join()
 
 
                 # 遍历目录
@@ -86,6 +87,12 @@ def rename_files(url, path):
 if __name__ == '__main__':
     print('请输入相对网址：')
     input_url = 'http://www.justing.com.cn/' + input()
-    print('请输入音频文件全路径：')
-    audio_dir = input()
+    print('请输入音频文件相对路径：')
+    rel_dir = input()
+    audio_dir = os.path.join(os.getcwd(), rel_dir)
     rename_files(input_url, audio_dir)
+
+
+
+
+
