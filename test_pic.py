@@ -10,6 +10,7 @@ file_context = fp.read()
 xpath_tree = html.fromstring(file_context)
 image_list = xpath_tree.xpath('//div[@class="RichText PostIndex-content '
                               'av-paddingSide av-card"]/img/@data-original')
+
 # print('input...')
 # image_list = input().split(' ')
 # image_list = xpath_tree.xpath('//div[@class="RichText PostIndex-content av-paddingSide av-card"]')

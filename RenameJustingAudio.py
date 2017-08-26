@@ -10,7 +10,7 @@ import threading
 def req_audio_names(cur_session, cur_header, req_url, audio_name_list, audio_id):
     ret = cur_session.get(req_url, headers=cur_header)
     if ret.status_code != 200:
-        print('获取%s对应的文件名失败！状态码%d，%s') % (audio_id, ret.status_code, str(ret.reason))
+        print(('获取%s对应的文件名失败！状态码%d，%s') % (audio_id, ret.status_code, str(ret.reason)))
     else:
         ret_json = json.loads(ret.text)
         cur_file_name = ret_json['files']['file'].split('attname=')[1].split('.mp3')[0]
