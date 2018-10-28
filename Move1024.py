@@ -33,7 +33,7 @@ for dir_item in all_dir_list:
                     for file_item in files:
                         if not file_item.endswith('torrent') and not file_item.endswith('DS_Store') \
                                 and not file_item.startswith('.'):
-                            if os.path.exists(dest_path):
+                            if not os.path.exists(dest_path):
                                 os.mkdir(dest_path)
                             shutil.move(os.path.join(root, file_item), dest_path)
 
